@@ -73,6 +73,7 @@ namespace MemcachedLoaderService
                  */
                 config.MemcachedConnectionSettings = MemcachedServerSettings;
                 config.MySQLConnectionSettings = MySqlConfig;
+                config.CachedQueriesCollection = LoadQueriesSettings(XmlDoc.SelectNodes("/configuration/cache_queries/query"));
             }
             catch (Exception ex)
             {
@@ -81,7 +82,50 @@ namespace MemcachedLoaderService
                 eventLog.Dispose();
             }
 
+            /*
+             * Returns fresh instance of configuration settings
+             */
             return config;
+        }
+
+        private static List<CachedQuery> LoadQueriesSettings(XmlNodeList queriesNodes)
+        {
+            List<CachedQuery> ReturnCollection = new List<CachedQuery>();
+
+            if (queriesNodes != null && queriesNodes.Count > 0)
+            {
+                foreach (XmlNode queryNode in queriesNodes)
+                {
+                    if (queryNode.HasChildNodes)
+                    {
+                        CachedQuery cachedQuery = new CachedQuery();
+
+                        foreach (XmlNode XmlItem in queryNode.ChildNodes)
+                        {
+                            if (XmlItem.Name.Equals("keyprefix"))
+                            {
+                                cachedQuery.KeyPrefix = XmlItem.InnerText;
+                                continue;
+                            }
+                            if (XmlItem.Name.Equals("sql"))
+                            {
+                                cachedQuery.Sql = XmlItem.InnerText;
+                                continue;
+                            }
+                        }
+
+                        /*
+                         * Add new query to return collection
+                         */
+                        ReturnCollection.Add(cachedQuery);
+                    }
+                }
+            }
+
+            /*
+             * Results
+             */
+            return ReturnCollection;
         }
     }
 }
