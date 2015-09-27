@@ -68,6 +68,10 @@ namespace MemcachedLoaderService
                 string dbPassword = XmlDoc.SelectSingleNode("/configuration/mysql/password").InnerText;
                 MySqlConfig.Password = dbPassword;
 
+                //password
+                string dbName = XmlDoc.SelectSingleNode("/configuration/mysql/database").InnerText;
+                MySqlConfig.Database = dbName;
+
                 /*
                  * Load all objects in main configuration object
                  */

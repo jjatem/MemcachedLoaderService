@@ -11,6 +11,7 @@
     <port>3306</port>
     <username>jjatem</username>
     <password></password>
+    <database>development</database>
   </mysql>
   <cache_queries>
     <query>
