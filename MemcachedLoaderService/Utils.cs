@@ -53,7 +53,7 @@ namespace MemcachedLoaderService
             bool LoadedQuery = false;
             ErrorMessage = string.Empty;
 
-            ResponseCode response = ResponseCode.NoError;
+            ResponseCode response = ResponseCode.UnknownCommand;
 
             try
             {

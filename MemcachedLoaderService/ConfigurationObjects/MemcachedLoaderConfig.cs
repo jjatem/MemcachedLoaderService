@@ -62,7 +62,7 @@ namespace MemcachedLoaderService
 
                 //username
                 string dbUsername = XmlDoc.SelectSingleNode("/configuration/mysql/username").InnerText;
-                MySqlConfig.Port = dbUsername;
+                MySqlConfig.Username = dbUsername;
 
                 //password
                 string dbPassword = XmlDoc.SelectSingleNode("/configuration/mysql/password").InnerText;
