@@ -32,9 +32,10 @@ namespace MemcachedLoaderService
 
                 /*
                  * Load memcached server connections settings
-                 */
-                //server
+                 */                
                 MemcachedSettings MemcachedServerSettings = new MemcachedSettings();
+
+                //server
                 string mcServer = XmlDoc.SelectSingleNode("/configuration/memcached/server").InnerText;
                 MemcachedServerSettings.Server = mcServer;
 
@@ -46,6 +47,32 @@ namespace MemcachedLoaderService
                 int mcCacheItemExpireSeconds = int.Parse(XmlDoc.SelectSingleNode("/configuration/memcached/cache_object_seconds").InnerText);
                 MemcachedServerSettings.CacheObjectSeconds = mcCacheItemExpireSeconds;
 
+                /*
+                 * Load MySQL database connection settings - for now a single server support
+                 */
+                MySQLSettings MySqlConfig = new MySQLSettings();
+
+                //server
+                string dbServer = XmlDoc.SelectSingleNode("/configuration/mysql/server").InnerText;
+                MySqlConfig.Server = dbServer;
+
+                //port
+                string dbPort = XmlDoc.SelectSingleNode("/configuration/mysql/port").InnerText;
+                MySqlConfig.Port = dbPort;
+
+                //username
+                string dbUsername = XmlDoc.SelectSingleNode("/configuration/mysql/username").InnerText;
+                MySqlConfig.Port = dbUsername;
+
+                //password
+                string dbPassword = XmlDoc.SelectSingleNode("/configuration/mysql/password").InnerText;
+                MySqlConfig.Password = dbPassword;
+
+                /*
+                 * Load all objects in main configuration object
+                 */
+                config.MemcachedConnectionSettings = MemcachedServerSettings;
+                config.MySQLConnectionSettings = MySqlConfig;
             }
             catch (Exception ex)
             {
