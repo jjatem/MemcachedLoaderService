@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <memcached>
+    <server>192.168.1.48</server>
+    <port>11211</port>
+    <cache_object_seconds>1500</cache_object_seconds>
+  </memcached>
+  <reload_entire_cache_seconds>2000</reload_entire_cache_seconds>
+  <mysql>
+    <server>192.168.1.48</server>
+    <port>3306</port>
+    <username>jjatem</username>
+    <password>gk223277</password>
+  </mysql>
+  <cache_queries>
+    <query>
+      <!-- Every unique key in the memcached will be prefixed-->
+      <keyprefix>customer</keyprefix>
+      <sql>select * from customer;</sql>
+    </query>
+    <query>
+      <keyprefix>calcustomers</keyprefix>
+      <sql>SELECT * FROM customer WHERE region_state='CA';</sql>
+    </query>
+  </cache_queries>
+</configuration>
