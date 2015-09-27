@@ -12,6 +12,7 @@ namespace MemcachedLoaderService
         public static EventLog GetEventLog()
         {
             EventLog eventLog = new EventLog("MemcachedLoaderConfig");
+            eventLog.Source = "MemcachedLoaderConfig";
             return eventLog;
         }
     }
