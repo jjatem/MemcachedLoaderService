@@ -77,9 +77,11 @@ namespace MemcachedLoaderService
             }
             catch (Exception ex)
             {
-                EventLog eventLog = new EventLog("MemcachedLoaderConfig");
-                eventLog.WriteEntry(string.Format("MemcachedLoaderService. Error loading Service Configuration XML File. Error message was [{0}].", ex.Message));
+                EventLog eventLog = Utils.GetEventLog();
+                string ErrorMessage = string.Format("MemcachedLoaderService. Error loading Service Configuration XML File. Error message was [{0}].", ex.Message);
+                eventLog.WriteEntry(ErrorMessage);
                 eventLog.Dispose();
+                throw new ApplicationException(ErrorMessage);
             }
 
             /*
