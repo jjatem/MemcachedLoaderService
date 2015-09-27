@@ -59,7 +59,10 @@ namespace MemcachedLoaderService
 
         private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
-            Console.WriteLine("The Elapsed event was raised at {0}", e.SignalTime);
+            string Event = string.Format("[MemcachedLoaderService] The Elapsed event was raised at {0}", e.SignalTime);
+            Utils.GetEventLog().WriteEntry(Event);
+
+            Utils.ReloadMemcached(((MemcachedLoaderService)source).Configuration);
         }
 
         private void LoadConfiguration()
