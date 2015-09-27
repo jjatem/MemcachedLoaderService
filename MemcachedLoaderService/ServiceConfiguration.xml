@@ -10,7 +10,7 @@
     <server>192.168.1.48</server>
     <port>3306</port>
     <username>jjatem</username>
-    <password>gk223277</password>
+    <password></password>
   </mysql>
   <cache_queries>
     <query>
