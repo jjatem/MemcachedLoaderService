@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -47,6 +48,23 @@ namespace MemcachedLoaderService
             return Refreshed;
         }
 
+
+        public static bool GetQueryCacheDictionaryFromDataTable(MySQLSettings MySQLConfig, CachedQuery QuerySpecs, DataTable MySQLTableRows, out Dictionary<string,Dictionary<string, string>> DictionaryToCache, out string ErrorMessage)
+        {
+            bool CreatedDictionary = false;
+            ErrorMessage = string.Empty;
+
+            DictionaryToCache = new Dictionary<string, Dictionary<string, string>>();
+
+            /*
+             * First Get Database Table Schema for the table to cache
+             */
+
+
+
+
+            return CreatedDictionary;
+        }
 
         public static bool LoadQueryInMemCached(MemcachedLoaderConfig Config, CachedQuery QueryToLoad, out string ErrorMessage)
         {
@@ -173,6 +191,73 @@ namespace MemcachedLoaderService
              * Return database table
              */
             return MyQueryTable;
+        }
+
+
+        /// <summary>
+        /// Get Table Schema. Needed to build PK simple or compounded key values
+        /// </summary>
+        /// <param name="MySQLConfig"></param>
+        /// <param name="TableName"></param>
+        /// <returns></returns>
+        private DataTable GetSchemaTypeMySQLTable(MySQLSettings MySQLConfig, string TableName)
+        {
+            DataTable ReturnTable = null;
+            MySqlConnection MySqlConn = null;
+
+            string ConnString = Utils.GetMySQLConnectionString(MySQLConfig);
+
+            try
+            {
+                using (MySqlConn = new MySqlConnection(ConnString))
+                {
+                    MySqlCommand MySqlCmd = new MySqlCommand(TableName, MySqlConn);
+                    MySqlCmd.CommandType = CommandType.TableDirect;
+
+                    MySqlDataAdapter MySqlDataAdapt = new MySqlDataAdapter(MySqlCmd);
+
+                    DataSet MyDataSet = new DataSet();
+                    MySqlDataAdapt.FillSchema(MyDataSet, SchemaType.Source, TableName);
+
+                    if (MyDataSet.Tables != null && MyDataSet.Tables.Count > 0)
+                    {
+                        ReturnTable = MyDataSet.Tables[0];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = string.Format("MemcachedLoaderService. Error Retrieving Table Specs from MySQL Connection. TableName is [{0}]. Error Message is [{1}].", TableName, ex.Message);
+                Utils.GetEventLog().WriteEntry(ErrorMessage);
+            }
+            finally
+            {
+                if (MySqlConn != null)
+                    MySqlConn.Close();
+            }
+
+            return ReturnTable;
+        }
+
+
+        /// <summary>
+        /// Gets the primary key columns for a given table schema
+        /// </summary>
+        /// <param name="Table"></param>
+        /// <returns></returns>
+        private List<string> GetPrimaryKeyColumnNamesCollection(DataTable Table)
+        {
+            List<string> ReturnCollection = new List<string>();
+
+            if (Table != null && Table.PrimaryKey != null && Table.PrimaryKey.Length > 0)
+            {
+                foreach (DataColumn ColumDef in Table.PrimaryKey)
+                {
+                   ReturnCollection.Add(ColumDef.ColumnName);
+                }
+            }
+
+            return ReturnCollection;
         }
     }
 }

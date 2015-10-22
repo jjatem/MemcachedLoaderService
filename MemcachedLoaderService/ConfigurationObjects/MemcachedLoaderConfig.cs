@@ -118,6 +118,11 @@ namespace MemcachedLoaderService
                                 cachedQuery.Sql = XmlItem.InnerText;
                                 continue;
                             }
+                            if (XmlItem.Name.Equals("mysql_tablename"))
+                            {
+                                cachedQuery.MySqlTableName = XmlItem.InnerText;
+                                continue;
+                            }
                         }
 
                         /*

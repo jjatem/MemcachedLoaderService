@@ -16,10 +16,12 @@
   <cache_queries>
     <query>
       <!-- Every unique key in the memcached will be prefixed-->
+      <mysql_tablename>customer</mysql_tablename>
       <keyprefix>customer</keyprefix>
       <sql>select * from customer;</sql>
     </query>
     <query>
+      <mysql_tablename>customer</mysql_tablename>
       <keyprefix>calcustomers</keyprefix>
       <sql>SELECT * FROM customer WHERE region_state='CA';</sql>
     </query>

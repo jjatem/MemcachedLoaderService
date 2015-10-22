@@ -10,5 +10,6 @@ namespace MemcachedLoaderService
     {
         public string KeyPrefix { get; set; }
         public string Sql { get; set; }
+        public string MySqlTableName { get; set; }
     }
 }
