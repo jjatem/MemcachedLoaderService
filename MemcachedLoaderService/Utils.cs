@@ -81,6 +81,16 @@ namespace MemcachedLoaderService
             /*
              * Build in Memory Dictionary to Load in Memcached service
              */
+             if (MySQLTableRowsToCache != null && MySQLTableRowsToCache.Rows.Count > 0)
+            {
+                foreach(DataRow dr in MySQLTableRowsToCache.Rows)
+                {
+                    string MainDictKey = dr.GetFormatedMemCachedKey(PKColumnNames, QuerySpecs);
+                    Dictionary<string, string> NestedDictValue = new Dictionary<string, string>();
+
+                    DictionaryToCache.Add(MainDictKey, NestedDictValue);
+                }
+            }
 
 
 
@@ -134,6 +144,12 @@ namespace MemcachedLoaderService
                             response = client.Replace(Key, dr["customer_name"].ToString(), DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
                         }
                     }
+
+                    //TODO: refactor to real generic ditionary logic
+                    Dictionary<string, Dictionary<string, string>> MemoryDict = null;
+                    string ErrMsg = string.Empty;
+
+                    bool Success = Utils.GetQueryCacheDictionaryFromDataTable(Config.MySQLConnectionSettings, QueryToLoad, QueryDataTable, out MemoryDict, out ErrMsg);
                 }
 
                 /*
