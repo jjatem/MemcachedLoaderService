@@ -104,6 +104,8 @@ namespace MemcachedLoaderService
 
             ResponseCode response = ResponseCode.UnknownCommand;
 
+            Dictionary<string, Dictionary<string, string>> MemoryDict;
+
             try
             {
                 /*
@@ -146,7 +148,7 @@ namespace MemcachedLoaderService
                     }
 
                     //TODO: refactor to real generic ditionary logic
-                    Dictionary<string, Dictionary<string, string>> MemoryDict = null;
+                    MemoryDict = null;
                     string ErrMsg = string.Empty;
 
                     bool Success = Utils.GetQueryCacheDictionaryFromDataTable(Config.MySQLConnectionSettings, QueryToLoad, QueryDataTable, out MemoryDict, out ErrMsg);

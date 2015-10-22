@@ -15,13 +15,17 @@ namespace MemcachedLoaderService
 
             if (myRow != null && myRow.Table.Columns != null && myRow.Table.Columns.Count > 0)
             {
-                if (PKColumnsList != null && PKColumnsList.Count > 0)
+                if (PKColumnsList != null && PKColumnsList.Count > 1)
                 {
-                    FormattedKey = string.Format("{0}.key={1}", PKColumnsList.Aggregate((bulk, obj) => bulk + myRow[obj].ToString() + "+"));
+                    FormattedKey = string.Format("{0}.key={1}", QuerySpecs.KeyPrefix, PKColumnsList.Aggregate((bulk, obj) => bulk + myRow[obj].ToString() + "+"));
+                }
+                else if (PKColumnsList != null && PKColumnsList.Count == 1)
+                {
+                    FormattedKey = string.Format("{0}.key={1}", QuerySpecs.KeyPrefix, myRow[PKColumnsList.ElementAt(0)].ToString());
                 }
                 else
                 {
-                    FormattedKey = string.Format("{0}.key={1}", myRow[0].ToString());
+                    FormattedKey = string.Format("{0}.key={1}", QuerySpecs.KeyPrefix, myRow[0].ToString());
                 }
             }
 
