@@ -48,18 +48,39 @@ namespace MemcachedLoaderService
             return Refreshed;
         }
 
-
-        public static bool GetQueryCacheDictionaryFromDataTable(MySQLSettings MySQLConfig, CachedQuery QuerySpecs, DataTable MySQLTableRows, out Dictionary<string,Dictionary<string, string>> DictionaryToCache, out string ErrorMessage)
+        /// <summary>
+        /// Loads the DataRows retrieved from MYSQL in a Generic Dictionary Ready to be Cached in MemCached. Uses Generic Collections but will have to be converted to a HashTable for the Memcached Client
+        /// </summary>
+        /// <param name="MySQLConfig"></param>
+        /// <param name="QuerySpecs"></param>
+        /// <param name="MySQLTableRowsToCache"></param>
+        /// <param name="DictionaryToCache"></param>
+        /// <param name="ErrorMessage"></param>
+        /// <returns></returns>
+        public static bool GetQueryCacheDictionaryFromDataTable(MySQLSettings MySQLConfig, CachedQuery QuerySpecs, DataTable MySQLTableRowsToCache, out Dictionary<string,Dictionary<string, string>> DictionaryToCache, out string ErrorMessage)
         {
             bool CreatedDictionary = false;
             ErrorMessage = string.Empty;
 
             DictionaryToCache = new Dictionary<string, Dictionary<string, string>>();
+            List<string> PKColumnNames = null;
 
             /*
              * First Get Database Table Schema for the table to cache
              */
+            DataTable TableSchemaDefinition = Utils.GetSchemaTypeMySQLTable(MySQLConfig, QuerySpecs.MySqlTableName);
 
+            /*
+             * Get Primary Key ColumnNames
+             */
+            if (TableSchemaDefinition.Columns != null && TableSchemaDefinition.Columns.Count > 0)
+            {
+                PKColumnNames = Utils.GetPrimaryKeyColumnNamesCollection(TableSchemaDefinition);
+            }
+
+            /*
+             * Build in Memory Dictionary to Load in Memcached service
+             */
 
 
 
@@ -200,7 +221,7 @@ namespace MemcachedLoaderService
         /// <param name="MySQLConfig"></param>
         /// <param name="TableName"></param>
         /// <returns></returns>
-        private DataTable GetSchemaTypeMySQLTable(MySQLSettings MySQLConfig, string TableName)
+        private static DataTable GetSchemaTypeMySQLTable(MySQLSettings MySQLConfig, string TableName)
         {
             DataTable ReturnTable = null;
             MySqlConnection MySqlConn = null;
@@ -243,15 +264,15 @@ namespace MemcachedLoaderService
         /// <summary>
         /// Gets the primary key columns for a given table schema
         /// </summary>
-        /// <param name="Table"></param>
+        /// <param name="TableSchemaDefinition"></param>
         /// <returns></returns>
-        private List<string> GetPrimaryKeyColumnNamesCollection(DataTable Table)
+        private static List<string> GetPrimaryKeyColumnNamesCollection(DataTable TableSchemaDefinition)
         {
             List<string> ReturnCollection = new List<string>();
 
-            if (Table != null && Table.PrimaryKey != null && Table.PrimaryKey.Length > 0)
+            if (TableSchemaDefinition != null && TableSchemaDefinition.PrimaryKey != null && TableSchemaDefinition.PrimaryKey.Length > 0)
             {
-                foreach (DataColumn ColumDef in Table.PrimaryKey)
+                foreach (DataColumn ColumDef in TableSchemaDefinition.PrimaryKey)
                 {
                    ReturnCollection.Add(ColumDef.ColumnName);
                 }
