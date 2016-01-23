@@ -81,12 +81,14 @@ namespace MemcachedLoaderService
             /*
              * Build in Memory Dictionary to Load in Memcached service
              */
-             if (MySQLTableRowsToCache != null && MySQLTableRowsToCache.Rows.Count > 0)
+            if (MySQLTableRowsToCache != null && MySQLTableRowsToCache.Rows.Count > 0)
             {
-                foreach(DataRow dr in MySQLTableRowsToCache.Rows)
+                foreach (DataRow dr in MySQLTableRowsToCache.Rows)
                 {
                     string MainDictKey = dr.GetFormatedMemCachedKey(PKColumnNames, QuerySpecs);
-                    Dictionary<string, string> NestedDictValue = new Dictionary<string, string>();
+                    Dictionary<string, string> NestedDictValue = dr.Table.Columns
+                                    .Cast<DataColumn>()
+                                    .ToDictionary(col => col.ColumnName, col => dr[col.ColumnName].ToString());
 
                     DictionaryToCache.Add(MainDictKey, NestedDictValue);
                 }

@@ -5,7 +5,7 @@
     <port>11211</port>
     <cache_object_seconds>1500</cache_object_seconds>
   </memcached>
-  <reload_entire_cache_seconds>2000</reload_entire_cache_seconds>
+  <reload_entire_cache_seconds>120</reload_entire_cache_seconds>
   <mysql>
     <server>192.168.1.48</server>
     <port>3306</port>
