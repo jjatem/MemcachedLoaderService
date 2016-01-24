@@ -38,6 +38,15 @@ namespace MemCachedTestClient
             Dictionary<string, string> JSONDict = MemcachedServer.GetStoredRowDictionaryForKey("calcustomers.key=1");
             System.Console.WriteLine("Success obtaining Row Dictionary...");
 
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
+            System.Console.WriteLine("Obtaining City Name for Customer with Id 3");
+            System.Console.WriteLine("City Name is: {0}", MemcachedServer.GetColumnValueForRowKeyandColumnName("customer.key=3", "city"));
+
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
             System.Console.WriteLine("Press Any Key to Exit...");
             System.Console.ReadKey();
 

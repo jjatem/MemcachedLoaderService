@@ -77,6 +77,23 @@ namespace MemcachedLoaderServiceClient
             return retval;
         }
 
+        public string GetColumnValueForRowKeyandColumnName(string key, string column_name)
+        {
+            string retval = string.Empty;
+
+            Dictionary<string, string> JSONDict = GetStoredRowDictionaryForKey(key);
+
+            if (JSONDict != null && JSONDict.Count > 0)
+            {
+                if (JSONDict.ContainsKey(column_name))
+                {
+                    retval = JSONDict[column_name];
+                }
+            }
+
+            return retval;
+        }
+
         public bool IsServerConnectionOpen()
         {
             try
