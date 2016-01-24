@@ -47,7 +47,7 @@ namespace MemcachedLoaderServiceClient
 
             if (this.IsServerConnectionOpen())
             {
-
+                return this.Client.Get(key).ToString();
             }
 
             return retval;

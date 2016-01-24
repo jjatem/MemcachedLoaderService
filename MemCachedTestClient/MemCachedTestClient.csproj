@@ -57,6 +57,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MemcachedLoaderServiceClient\MemcachedLoaderServiceClient.csproj">
+      <Project>{1d7bd065-0d19-4540-99e9-4a0b5e5bf279}</Project>
+      <Name>MemcachedLoaderServiceClient</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

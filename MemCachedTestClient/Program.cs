@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NMemcached;
 using NMemcached.Client;
+using MemcachedLoaderServiceClient;
 
 namespace MemCachedTestClient
 {
@@ -12,9 +13,28 @@ namespace MemCachedTestClient
     {
         static void Main(string[] args)
         {
+            //TestNMemcachedClient();
+            CacheLoaderServiceClient MemcachedServer = new CacheLoaderServiceClient("192.168.1.48", 11211);
+
+            if (!MemcachedServer.IsServerConnectionOpen())
+            {
+                System.Console.WriteLine("Could not connect to Memcached server host: [{0}] on port: [{1}]. Check your logs and network connections.", MemcachedServer.MemcachedServer, MemcachedServer.MemcachedPort);
+                System.Console.WriteLine("Press Any Key to Exit...");
+                System.Console.ReadKey();
+                return;
+            }
+
+            System.Console.WriteLine(MemcachedServer.GetStoredJSONForKey("customer.key=1"));
+            System.Console.WriteLine("Press Any Key to Exit...");
+            System.Console.ReadKey();
+
+        }
+
+        public static void TestNMemcachedClient()
+        {
             /*
-                * Connect to memcached server
-                */
+             * Connect to memcached server
+             */
             ServerConnectionCollection MemCachedServers = new ServerConnectionCollection();
 
             /*
@@ -43,7 +63,6 @@ namespace MemCachedTestClient
 
             System.Console.WriteLine("Press any key to exit....");
             System.Console.ReadLine();
-
         }
     }
 }
