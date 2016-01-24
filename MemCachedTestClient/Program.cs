@@ -25,10 +25,19 @@ namespace MemCachedTestClient
             }
 
             System.Console.WriteLine(MemcachedServer.GetStoredJSONForKey("customer.key=1"));
+
             System.Console.WriteLine();
-            System.Console.WriteLine();
-            System.Console.WriteLine();
+            System.Console.WriteLine();            
+
             System.Console.WriteLine(MemcachedServer.GetStoredJSONForKey("calcustomers.key=2"));
+
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
+            System.Console.WriteLine("Obtaining dictionary using Client Get Row Dictionary Method");
+            Dictionary<string, string> JSONDict = MemcachedServer.GetStoredRowDictionaryForKey("calcustomers.key=1");
+            System.Console.WriteLine("Success obtaining Row Dictionary...");
+
             System.Console.WriteLine("Press Any Key to Exit...");
             System.Console.ReadKey();
 

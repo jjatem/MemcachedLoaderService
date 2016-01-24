@@ -10,6 +10,8 @@ namespace MemcachedLoaderServiceClient
 {
     public class CacheLoaderServiceClient
     {
+        #region properties
+
         public string MemcachedServer { get; set; }
         public int MemcachedPort { get; set; }
 
@@ -23,6 +25,10 @@ namespace MemcachedLoaderServiceClient
 
         private ServerConnectionCollection MemCachedServers = new ServerConnectionCollection();
         private MemcachedClient client;
+
+        #endregion
+
+        #region ctor
 
         public CacheLoaderServiceClient(string server, int port)
         {
@@ -41,6 +47,10 @@ namespace MemcachedLoaderServiceClient
             this.client = new MemcachedClient(provider);
         }
 
+        #endregion
+
+        #region methods
+
         public string GetStoredJSONForKey(string key)
         {
             string retval = string.Empty;
@@ -48,6 +58,20 @@ namespace MemcachedLoaderServiceClient
             if (this.IsServerConnectionOpen())
             {
                 return this.Client.Get(key).ToString();
+            }
+
+            return retval;
+        }
+
+        public Dictionary<string,string> GetStoredRowDictionaryForKey(string key)
+        {
+            Dictionary<string, string> retval = null;
+
+            if (this.IsServerConnectionOpen())
+            {
+                string JSONDict = this.Client.Get(key).ToString();
+
+                retval = JsonConvert.DeserializeObject<Dictionary<string, string>>(JSONDict);
             }
 
             return retval;
@@ -66,5 +90,7 @@ namespace MemcachedLoaderServiceClient
 
             return false;
         }
+
+        #endregion
     }
 }
