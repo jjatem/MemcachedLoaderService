@@ -25,6 +25,10 @@ namespace MemCachedTestClient
             }
 
             System.Console.WriteLine(MemcachedServer.GetStoredJSONForKey("customer.key=1"));
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+            System.Console.WriteLine(MemcachedServer.GetStoredJSONForKey("calcustomers.key=2"));
             System.Console.WriteLine("Press Any Key to Exit...");
             System.Console.ReadKey();
 
