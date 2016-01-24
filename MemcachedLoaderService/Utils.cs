@@ -141,22 +141,7 @@ namespace MemcachedLoaderService
                  */
                 if (QueryDataTable != null && QueryDataTable.Rows.Count > 0)
                 {
-                    #region deprecated
-                    //foreach (DataRow dr in QueryDataTable.Rows)
-                    //{
-                    //    //TODO: for now assume the pk is the first column. Need to change to dynamically determine PK
-                    //    string Key = string.Format("{0}.key={1}", QueryToLoad.KeyPrefix, dr[0].ToString());
-
-                    //    response = client.Set(Key, dr["customer_name"].ToString(), DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
-
-                    //    if (response == ResponseCode.KeyExists)
-                    //    {
-                    //        response = client.Replace(Key, dr["customer_name"].ToString(), DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
-                    //    }
-                    //}
-                    #endregion
-
-                    //TODO: refactor to real generic ditionary logic
+                    //Define a dictionary to store the data table to be serialized into a JSON object
                     MemoryDict = null;
                     string ErrMsg = string.Empty;
 
