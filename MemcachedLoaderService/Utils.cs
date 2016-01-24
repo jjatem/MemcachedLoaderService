@@ -9,6 +9,8 @@ using System.Diagnostics;
 using NMemcached;
 using NMemcached.Client;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace MemcachedLoaderService
 {
@@ -94,7 +96,10 @@ namespace MemcachedLoaderService
                 }
             }
 
-
+            /*
+             * Determine whether dictionary was populated
+             */
+            CreatedDictionary = (DictionaryToCache != null && DictionaryToCache.Count > 0);
 
             return CreatedDictionary;
         }
@@ -132,28 +137,53 @@ namespace MemcachedLoaderService
                 DataTable QueryDataTable = GetMySQLTable(Config.MySQLConnectionSettings, QueryToLoad);
 
                 /*
-                 * Cache data
+                 * Cache each row from the data table as a JSON serialized dictionary
                  */
                 if (QueryDataTable != null && QueryDataTable.Rows.Count > 0)
                 {
-                    foreach (DataRow dr in QueryDataTable.Rows)
-                    {
-                        //TODO: for now assume the pk is the first column. Need to change to dynamically determine PK
-                        string Key = string.Format("{0}.key={1}", QueryToLoad.KeyPrefix, dr[0].ToString());
+                    #region deprecated
+                    //foreach (DataRow dr in QueryDataTable.Rows)
+                    //{
+                    //    //TODO: for now assume the pk is the first column. Need to change to dynamically determine PK
+                    //    string Key = string.Format("{0}.key={1}", QueryToLoad.KeyPrefix, dr[0].ToString());
 
-                        response = client.Set(Key, dr["customer_name"].ToString(), DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
+                    //    response = client.Set(Key, dr["customer_name"].ToString(), DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
 
-                        if (response == ResponseCode.KeyExists)
-                        {
-                            response = client.Replace(Key, dr["customer_name"].ToString(), DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
-                        }
-                    }
+                    //    if (response == ResponseCode.KeyExists)
+                    //    {
+                    //        response = client.Replace(Key, dr["customer_name"].ToString(), DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
+                    //    }
+                    //}
+                    #endregion
 
                     //TODO: refactor to real generic ditionary logic
                     MemoryDict = null;
                     string ErrMsg = string.Empty;
 
+                    /*
+                     * Convert DataTable / MySQL Query ResultSet in Dictionary<string,Dictionary<string,string>> object
+                     */
                     bool Success = Utils.GetQueryCacheDictionaryFromDataTable(Config.MySQLConnectionSettings, QueryToLoad, QueryDataTable, out MemoryDict, out ErrMsg);
+
+                    /*
+                     * Table Data Dictionary was successfully created - Cached each row in Memcached as a JSON dictionary
+                     */
+                    if (Success)
+                    {
+                        foreach (KeyValuePair<string, Dictionary<string, string>> TableDictionaryKvp in MemoryDict)
+                        {
+                            string Key = TableDictionaryKvp.Key;
+                            string JsonStoreValue = JsonConvert.SerializeObject(TableDictionaryKvp.Value, new KeyValuePairConverter());
+
+                            response = client.Set(Key, JsonStoreValue, DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
+
+                            if (response == ResponseCode.KeyExists)
+                            {
+                                response = client.Replace(Key, JsonStoreValue, DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
+                            }
+                        }
+                    }
+                    
                 }
 
                 /*
