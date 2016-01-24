@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemcachedLoaderService", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemCachedTestClient", "MemCachedTestClient\MemCachedTestClient.csproj", "{2612DF1C-E0AC-4FF6-B6AE-53046D9D1FB5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemcachedLoaderServiceClient", "MemcachedLoaderServiceClient\MemcachedLoaderServiceClient.csproj", "{1D7BD065-0D19-4540-99E9-4A0B5E5BF279}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2612DF1C-E0AC-4FF6-B6AE-53046D9D1FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2612DF1C-E0AC-4FF6-B6AE-53046D9D1FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2612DF1C-E0AC-4FF6-B6AE-53046D9D1FB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7BD065-0D19-4540-99E9-4A0B5E5BF279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7BD065-0D19-4540-99E9-4A0B5E5BF279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7BD065-0D19-4540-99E9-4A0B5E5BF279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7BD065-0D19-4540-99E9-4A0B5E5BF279}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
