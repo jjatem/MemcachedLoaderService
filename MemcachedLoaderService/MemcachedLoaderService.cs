@@ -62,7 +62,21 @@ namespace MemcachedLoaderService
             string Event = string.Format("[MemcachedLoaderService] The Elapsed event was raised at {0}", e.SignalTime.ToString());
             Utils.GetEventLog().WriteEntry(Event);
 
-            Utils.ReloadMemcached(this.Configuration);
+            /*
+             * Reload all queries in Memcached Server - MEMCACHED
+             */
+            if (this.Configuration.EnableMemcachedCaching)
+            {
+                Utils.ReloadMemcached(this.Configuration);
+            }
+
+            /*
+             * Reload all queries in Redis Server - REDIS
+             */
+            if (this.Configuration.EnableRedisCaching)
+            {
+                RedisUtils.ReloadRedisServer(this.Configuration);
+            }
         }
 
         private void LoadConfiguration()
