@@ -12,6 +12,7 @@ namespace MemcachedLoaderService
     {
         public int ReloadEntireCacheSeconds { get; set; }
         public MemcachedSettings MemcachedConnectionSettings { get; set; }
+        public RedisSettings RedisConnectionSettings { get; set; }
         public MySQLSettings MySQLConnectionSettings { get; set; }
         public List<CachedQuery> CachedQueriesCollection { get; set; }
 
@@ -48,6 +49,23 @@ namespace MemcachedLoaderService
                 MemcachedServerSettings.CacheObjectSeconds = mcCacheItemExpireSeconds;
 
                 /*
+                 * Load Redis server connection settings
+                 */
+                RedisSettings RedisServerSettings = new RedisSettings();
+
+                //redis server host
+                string redisServer = XmlDoc.SelectSingleNode("/configuration/redis/server").InnerText;
+                RedisServerSettings.Server = redisServer;
+
+                //redis server port
+                int redisPort = int.Parse(XmlDoc.SelectSingleNode("/configuration/redis/port").InnerText);
+                RedisServerSettings.Port = redisPort;
+
+                //redis server password
+                string redisPassword = XmlDoc.SelectSingleNode("/configuration/redis/password").InnerText;
+                RedisServerSettings.Password = redisPassword;
+
+                /*
                  * Load MySQL database connection settings - for now a single server support
                  */
                 MySQLSettings MySqlConfig = new MySQLSettings();
@@ -76,6 +94,7 @@ namespace MemcachedLoaderService
                  * Load all objects in main configuration object
                  */
                 config.MemcachedConnectionSettings = MemcachedServerSettings;
+                config.RedisConnectionSettings = RedisServerSettings;
                 config.MySQLConnectionSettings = MySqlConfig;
                 config.CachedQueriesCollection = LoadQueriesSettings(XmlDoc.SelectNodes("/configuration/cache_queries/query"));
             }

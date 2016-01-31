@@ -74,6 +74,7 @@
     <Compile Include="ConfigurationObjects\MemcachedLoaderConfig.cs" />
     <Compile Include="ConfigurationObjects\MemcachedSettings.cs" />
     <Compile Include="ConfigurationObjects\MySQLSettings.cs" />
+    <Compile Include="ConfigurationObjects\RedisSettings.cs" />
     <Compile Include="DataRowCustomExtensions.cs" />
     <Compile Include="MemcachedLoaderService.cs">
       <SubType>Component</SubType>
