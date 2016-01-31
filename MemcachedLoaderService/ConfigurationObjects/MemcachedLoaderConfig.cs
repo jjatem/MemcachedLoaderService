@@ -10,13 +10,20 @@ namespace MemcachedLoaderService
 {
     public class MemcachedLoaderConfig
     {
+        #region properties
+
+        public bool EnableMemcachedCaching { get; set; }
+        public bool EnableRedisCaching { get; set; }
         public int ReloadEntireCacheSeconds { get; set; }
         public MemcachedSettings MemcachedConnectionSettings { get; set; }
         public RedisSettings RedisConnectionSettings { get; set; }
         public MySQLSettings MySQLConnectionSettings { get; set; }
         public List<CachedQuery> CachedQueriesCollection { get; set; }
-        public bool EnableMemcachedCaching { get; set; }
-        public bool EnableRedisCaching { get; set; }
+
+
+        #endregion
+
+        #region methods
 
         public static MemcachedLoaderConfig LoadConfiguration(string XmlDocPath)
         {
@@ -127,6 +134,7 @@ namespace MemcachedLoaderService
             return config;
         }
 
+
         private static List<CachedQuery> LoadQueriesSettings(XmlNodeList queriesNodes)
         {
             List<CachedQuery> ReturnCollection = new List<CachedQuery>();
@@ -171,5 +179,7 @@ namespace MemcachedLoaderService
              */
             return ReturnCollection;
         }
+
+        #endregion
     }
 }
