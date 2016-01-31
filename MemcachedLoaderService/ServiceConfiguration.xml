@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+  <enable_redis_caching>true</enable_redis_caching>
+  <enable_memcached_caching>true</enable_memcached_caching>
   <memcached>
     <server>192.168.1.48</server>
     <port>11211</port>

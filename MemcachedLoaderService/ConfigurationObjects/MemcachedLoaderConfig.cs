@@ -15,6 +15,8 @@ namespace MemcachedLoaderService
         public RedisSettings RedisConnectionSettings { get; set; }
         public MySQLSettings MySQLConnectionSettings { get; set; }
         public List<CachedQuery> CachedQueriesCollection { get; set; }
+        public bool EnableMemcachedCaching { get; set; }
+        public bool EnableRedisCaching { get; set; }
 
         public static MemcachedLoaderConfig LoadConfiguration(string XmlDocPath)
         {
@@ -32,8 +34,20 @@ namespace MemcachedLoaderService
                 config.ReloadEntireCacheSeconds = int.Parse(RefreshSeconds.InnerText);
 
                 /*
+                 * Enable Redis Caching Flag
+                 */
+                XmlNode EnableRedisCaching = XmlDoc.SelectSingleNode("/configuration/enable_redis_caching");
+                config.EnableRedisCaching = bool.Parse(RefreshSeconds.InnerText);
+
+                /*
+                 * Enable Memcached Caching
+                 */
+                XmlNode EnableMemcachedCaching = XmlDoc.SelectSingleNode("/configuration/enable_memcached_caching");
+                config.EnableMemcachedCaching = bool.Parse(RefreshSeconds.InnerText);
+
+                /*
                  * Load memcached server connections settings
-                 */                
+                 */
                 MemcachedSettings MemcachedServerSettings = new MemcachedSettings();
 
                 //server
