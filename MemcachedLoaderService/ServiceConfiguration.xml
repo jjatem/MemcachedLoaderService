@@ -10,7 +10,7 @@
   <redis>
     <server>192.168.1.48</server>
     <port>6379</port>
-    <password>test1</password>
+    <password></password>
   </redis>
   <reload_entire_cache_seconds>120</reload_entire_cache_seconds>
   <mysql>
