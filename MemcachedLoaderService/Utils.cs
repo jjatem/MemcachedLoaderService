@@ -175,12 +175,12 @@ namespace MemcachedLoaderService
                  * Success
                  */
                 LoadedQuery = (response == ResponseCode.NoError);
-                Utils.GetEventLog().WriteEntry(string.Format("[MemcachedLoaderService] Successfully loaded table [{0}] in the memory cache.", QueryToLoad.KeyPrefix));
+                Utils.GetEventLog().WriteEntry(string.Format("[MemcachedLoaderService.Memcached] Successfully loaded table [{0}] in the memory cache.", QueryToLoad.KeyPrefix));
 
             }
             catch (Exception ex)
             {
-                ErrorMessage = string.Format("Can't load query into Cache. Memcached Error Message [{0}].", ex.Message);
+                ErrorMessage = string.Format("[MemcachedLoaderService.Memcached] Can't load query into Cache. Memcached Error Message [{0}].", ex.Message);
                 Utils.GetEventLog().WriteEntry(ErrorMessage);
             }
 
