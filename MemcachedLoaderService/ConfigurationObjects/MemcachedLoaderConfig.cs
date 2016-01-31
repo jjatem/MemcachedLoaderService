@@ -37,13 +37,13 @@ namespace MemcachedLoaderService
                  * Enable Redis Caching Flag
                  */
                 XmlNode EnableRedisCaching = XmlDoc.SelectSingleNode("/configuration/enable_redis_caching");
-                config.EnableRedisCaching = bool.Parse(RefreshSeconds.InnerText);
+                config.EnableRedisCaching = bool.Parse(EnableRedisCaching.InnerText);
 
                 /*
                  * Enable Memcached Caching
                  */
                 XmlNode EnableMemcachedCaching = XmlDoc.SelectSingleNode("/configuration/enable_memcached_caching");
-                config.EnableMemcachedCaching = bool.Parse(RefreshSeconds.InnerText);
+                config.EnableMemcachedCaching = bool.Parse(EnableMemcachedCaching.InnerText);
 
                 /*
                  * Load memcached server connections settings
