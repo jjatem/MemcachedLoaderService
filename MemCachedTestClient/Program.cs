@@ -14,6 +14,47 @@ namespace MemCachedTestClient
         static void Main(string[] args)
         {
             //TestNMemcachedClient();
+            //TestMemcachedClientLogic();
+
+            TestRedisClient();
+           
+
+            System.Console.WriteLine("Press Any Key to Exit...");
+            System.Console.ReadKey();
+
+        }
+
+        public static void TestRedisClient()
+        {
+            CacheLoaderRedisClient RedisCacheServer = new CacheLoaderRedisClient("192.168.1.48", 6379);
+
+            System.Console.WriteLine(RedisCacheServer.GetStoredJSONForKey("customer.key=1"));
+
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
+            System.Console.WriteLine(RedisCacheServer.GetStoredJSONForKey("calcustomers.key=2"));
+
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
+            System.Console.WriteLine("Obtaining dictionary using Redis Client Get Row Dictionary Method");
+            Dictionary<string, string> JSONDict = RedisCacheServer.GetStoredRowDictionaryForKey("calcustomers.key=1");
+            System.Console.WriteLine("Success obtaining Row Dictionary...");
+
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
+            System.Console.WriteLine("Obtaining City Name for Customer with Id 3");
+            System.Console.WriteLine("City Name is: {0}", RedisCacheServer.GetColumnValueForRowKeyandColumnName("customer.key=3", "city"));
+
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
+        }
+
+        public static void TestMemcachedClientLogic()
+        {
             CacheLoaderServiceClient MemcachedServer = new CacheLoaderServiceClient("192.168.1.48", 11211);
 
             if (!MemcachedServer.IsServerConnectionOpen())
@@ -27,7 +68,7 @@ namespace MemCachedTestClient
             System.Console.WriteLine(MemcachedServer.GetStoredJSONForKey("customer.key=1"));
 
             System.Console.WriteLine();
-            System.Console.WriteLine();            
+            System.Console.WriteLine();
 
             System.Console.WriteLine(MemcachedServer.GetStoredJSONForKey("calcustomers.key=2"));
 
@@ -46,10 +87,6 @@ namespace MemCachedTestClient
 
             System.Console.WriteLine();
             System.Console.WriteLine();
-
-            System.Console.WriteLine("Press Any Key to Exit...");
-            System.Console.ReadKey();
-
         }
 
         public static void TestNMemcachedClient()

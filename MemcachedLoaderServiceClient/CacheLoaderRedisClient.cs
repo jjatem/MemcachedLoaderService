@@ -71,6 +71,49 @@ namespace MemcachedLoaderServiceClient
 
         #region methods
 
+        public string GetStoredJSONForKey(string key)
+        {
+            string retval = string.Empty;
+
+            if (this.GetRedisClient != null)
+            {
+                return this.GetRedisClient.Get<string>(key);
+            }
+
+            return retval;
+        }
+
+        public Dictionary<string, string> GetStoredRowDictionaryForKey(string key)
+        {
+            Dictionary<string, string> retval = null;
+
+            if (this.GetRedisClient != null)
+            {
+                string JSONDict = this.GetRedisClient.Get<string>(key);
+
+                retval = JsonConvert.DeserializeObject<Dictionary<string, string>>(JSONDict);
+            }
+
+            return retval;
+        }
+
+        public string GetColumnValueForRowKeyandColumnName(string key, string column_name)
+        {
+            string retval = string.Empty;
+
+            Dictionary<string, string> JSONDict = GetStoredRowDictionaryForKey(key);
+
+            if (JSONDict != null && JSONDict.Count > 0)
+            {
+                if (JSONDict.ContainsKey(column_name))
+                {
+                    retval = JSONDict[column_name];
+                }
+            }
+
+            return retval;
+        }
+
 
         private void OpenRedisConnection()
         {
