@@ -38,8 +38,12 @@ namespace MemCachedTestClient
             System.Console.WriteLine();
             System.Console.WriteLine();
 
-            System.Console.WriteLine("Obtaining dictionary using Redis Client Get Row Dictionary Method");
+            System.Console.WriteLine("Obtaining row dictionary using Redis Client Get Row Dictionary Method");
             Dictionary<string, string> JSONDict = RedisCacheServer.GetStoredRowDictionaryForKey("calcustomers.key=1");
+            System.Console.WriteLine("Success obtaining Row Dictionary...");
+
+            System.Console.WriteLine("Obtaining complete rows dictionary objects using Redis Client Get Row Dictionary Method");
+            List<Dictionary<string, string>> JSONDictCollection = RedisCacheServer.GetCachedRowsCollectionForKeyPrefix("customer");
             System.Console.WriteLine("Success obtaining Row Dictionary...");
 
             System.Console.WriteLine();

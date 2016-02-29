@@ -71,6 +71,29 @@ namespace MemcachedLoaderServiceClient
 
         #region methods
 
+        public List<Dictionary<string,string>> GetCachedRowsCollectionForKeyPrefix(string key_prefix)
+        {
+            List<Dictionary<string, string>> ReturnCollection = new List<Dictionary<string, string>>();
+
+            if (this.GetRedisClient != null)
+            {
+                List<string> AllStoredKeys = this.GetRedisClient.GetAllKeys();
+
+                if (AllStoredKeys != null && AllStoredKeys.Count > 0)
+                {
+                    foreach (string StoredKey in AllStoredKeys)
+                    {
+                        if (StoredKey.Trim().ToUpper().StartsWith(key_prefix.Trim().ToUpper()))
+                        {
+                            ReturnCollection.Add(this.GetStoredRowDictionaryForKey(StoredKey));
+                        }
+                    }
+                }
+            }
+
+            return ReturnCollection;
+        }
+
         public string GetStoredJSONForKey(string key)
         {
             string retval = string.Empty;
