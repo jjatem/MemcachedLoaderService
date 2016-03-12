@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace MemcachedLoaderServiceClient
 {
-    public class CacheLoaderServiceClient
+    public class CacheLoaderMemcachedClient
     {
         #region properties
 
@@ -30,7 +30,7 @@ namespace MemcachedLoaderServiceClient
 
         #region ctor
 
-        public CacheLoaderServiceClient(string server, int port)
+        public CacheLoaderMemcachedClient(string server, int port)
         {
             this.MemcachedServer = server;
             this.MemcachedPort = port;
@@ -49,8 +49,7 @@ namespace MemcachedLoaderServiceClient
 
         #endregion
 
-        #region methods
-
+        #region methods        
 
         public string GetStoredJSONForKey(string key)
         {

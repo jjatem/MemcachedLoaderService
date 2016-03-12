@@ -64,7 +64,7 @@ namespace MemCachedTestClient
 
         public static void TestMemcachedClientLogic()
         {
-            CacheLoaderServiceClient MemcachedServer = new CacheLoaderServiceClient("192.168.1.48", 11211);
+            CacheLoaderMemcachedClient MemcachedServer = new CacheLoaderMemcachedClient("192.168.1.48", 11211);
 
             if (!MemcachedServer.IsServerConnectionOpen())
             {
