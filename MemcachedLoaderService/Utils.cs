@@ -137,6 +137,11 @@ namespace MemcachedLoaderService
                 DataTable QueryDataTable = GetMySQLTable(Config.MySQLConnectionSettings, QueryToLoad);
 
                 /*
+                 * Determine whether to permanently persist kvp cached object in Redis
+                 */
+                bool PersistCachedObject = (Config.MemcachedConnectionSettings.CacheObjectSeconds <= 0);
+
+                /*
                  * Cache each row from the data table as a JSON serialized dictionary
                  */
                 if (QueryDataTable != null && QueryDataTable.Rows.Count > 0)
@@ -160,11 +165,23 @@ namespace MemcachedLoaderService
                             string Key = TableDictionaryKvp.Key;
                             string JsonStoreValue = JsonConvert.SerializeObject(TableDictionaryKvp.Value, new KeyValuePairConverter());
 
-                            response = client.Set(Key, JsonStoreValue, DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
+                            /*
+                             * Determine right expiration Datetime value
+                             */
+                            DateTime ExpireDate = (PersistCachedObject) ? DateTime.MaxValue : DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds);
 
+
+                            /*
+                             * Load Kvp in Memcached
+                             */
+                            response = client.Set(Key, JsonStoreValue, ExpireDate);
+
+                            /*
+                             * If key already exists replace it
+                             */
                             if (response == ResponseCode.KeyExists)
                             {
-                                response = client.Replace(Key, JsonStoreValue, DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
+                                response = client.Replace(Key, JsonStoreValue, ExpireDate);
                             }
                         }
                     }

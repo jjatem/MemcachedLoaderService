@@ -67,6 +67,11 @@ namespace MemcachedLoaderService
                     DataTable QueryDataTable = Utils.GetMySQLTable(Config.MySQLConnectionSettings, QueryToLoad);
 
                     /*
+                     * Determine whether to permanently persist kvp cached object in Redis
+                     */
+                    bool PersistCachedObject = (Config.RedisConnectionSettings.CacheObjectSeconds <= 0);
+
+                    /*
                      * Cache each row from the data table as a JSON serialized dictionary into the Redis Cache Server
                      */
                     if (QueryDataTable != null && QueryDataTable.Rows.Count > 0)
@@ -90,9 +95,18 @@ namespace MemcachedLoaderService
                                 string Key = TableDictionaryKvp.Key;
                                 string JsonStoreValue = JsonConvert.SerializeObject(TableDictionaryKvp.Value, new KeyValuePairConverter());
 
-                                LoadedQuery = client.Set<string>(Key, JsonStoreValue, DateTime.Now.AddSeconds(Config.MemcachedConnectionSettings.CacheObjectSeconds));
-
-                                
+                                /*
+                                 * Store value permanently or set an Expires Datetime
+                                 */
+                                if (PersistCachedObject)
+                                {
+                                    LoadedQuery = client.Set<string>(Key, JsonStoreValue);
+                                }
+                                else
+                                {
+                                    LoadedQuery = client.Set<string>(Key, JsonStoreValue, DateTime.Now.AddSeconds(Config.RedisConnectionSettings.CacheObjectSeconds));
+                                }
+                                                                
                             }
                         }
                     }

@@ -86,6 +86,10 @@ namespace MemcachedLoaderService
                 string redisPassword = XmlDoc.SelectSingleNode("/configuration/redis/password").InnerText;
                 RedisServerSettings.Password = redisPassword;
 
+                //redis global cache object seconds setting
+                int redisCacheItemExpireSeconds = int.Parse(XmlDoc.SelectSingleNode("/configuration/redis/cache_object_seconds").InnerText);
+                RedisServerSettings.CacheObjectSeconds = redisCacheItemExpireSeconds;
+
                 /*
                  * Load MySQL database connection settings - for now a single server support
                  */

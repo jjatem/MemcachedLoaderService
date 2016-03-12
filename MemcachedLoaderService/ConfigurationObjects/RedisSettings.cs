@@ -11,7 +11,7 @@ namespace MemcachedLoaderService
         public string Server { get; set; }
         public int Port { get; set; }
         public string Password { get; set; }
-
+        public int CacheObjectSeconds { get; set; }
 
         /// <summary>
         /// Builds the appropriate Redis Server connection string
