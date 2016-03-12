@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using ServiceStack.Redis;
@@ -71,7 +72,21 @@ namespace MemcachedLoaderServiceClient
 
         #region methods
 
-        public List<Dictionary<string,string>> GetCachedRowsCollectionForKeyPrefix(string key_prefix)
+        public DataTable GetDataTableForCacheKeyPrefix(string key_prefix)
+        {
+            DataTable rv = null;
+
+            List<Dictionary<string, string>> RowsDictionary = GetCachedRowsDictionaryCollectionForKeyPrefix(key_prefix);
+
+            if (RowsDictionary != null && RowsDictionary.Count > 0)
+            {
+                rv = MemoryCacheClientUtils.GetDataTableFromDictionaries<string>(RowsDictionary);
+            }
+
+            return rv;
+        }
+
+        public List<Dictionary<string,string>> GetCachedRowsDictionaryCollectionForKeyPrefix(string key_prefix)
         {
             List<Dictionary<string, string>> ReturnCollection = new List<Dictionary<string, string>>();
 

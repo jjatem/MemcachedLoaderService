@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using NMemcached;
@@ -43,8 +44,12 @@ namespace MemCachedTestClient
             System.Console.WriteLine("Success obtaining Row Dictionary...");
 
             System.Console.WriteLine("Obtaining complete rows dictionary objects using Redis Client Get Row Dictionary Method");
-            List<Dictionary<string, string>> JSONDictCollection = RedisCacheServer.GetCachedRowsCollectionForKeyPrefix("customer");
+            List<Dictionary<string, string>> JSONDictCollection = RedisCacheServer.GetCachedRowsDictionaryCollectionForKeyPrefix("customer");
             System.Console.WriteLine("Success obtaining Row Dictionary...");
+
+            System.Console.WriteLine("Obtaining complete Data table with row objects using Redis Client Get Data Table Method");
+            DataTable MyCachedTable = RedisCacheServer.GetDataTableForCacheKeyPrefix("customer");
+            System.Console.WriteLine("Success obtaining DataTable with cached rows...");
 
             System.Console.WriteLine();
             System.Console.WriteLine();

@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="CacheLoaderRedisClient.cs" />
     <Compile Include="CacheLoaderServiceClient.cs" />
+    <Compile Include="MemoryCacheClientUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
