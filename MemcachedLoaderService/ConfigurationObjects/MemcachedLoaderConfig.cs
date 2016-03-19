@@ -96,6 +96,10 @@ namespace MemcachedLoaderService
                 DatabaseSettings MySqlConfig = new DatabaseSettings();
 
                 //server
+                string dbType = XmlDoc.SelectSingleNode("/configuration/database_settings/db_type").InnerText;
+                MySqlConfig.DBType = dbType;
+
+                //server
                 string dbServer = XmlDoc.SelectSingleNode("/configuration/database_settings/server").InnerText;
                 MySqlConfig.Server = dbServer;
 

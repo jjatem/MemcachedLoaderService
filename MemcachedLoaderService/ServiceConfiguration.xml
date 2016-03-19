@@ -15,6 +15,7 @@
   </redis>
   <reload_entire_cache_seconds>120</reload_entire_cache_seconds>
   <database_settings>
+    <db_type>MySQL</db_type>
     <server>192.168.1.48</server>
     <port>3306</port>
     <username>jjatem</username>
@@ -24,13 +25,18 @@
   <cache_queries>
     <query>      
       <!-- Every unique key in the memcached will be prefixed-->
-      <db_connection>MySQL|Server=192.168.1.48;Port=1234;Database=development;Uid=jjatem;Pwd=gk223277;</db_connection>
       <database_tablename>customer</database_tablename>
       <keyprefix>customer</keyprefix>
       <sql>select * from customer;</sql>
     </query>
     <query>
       <db_connection>MySQL|Server=192.168.1.48;Port=1234;Database=development;Uid=jjatem;Pwd=gk223277;</db_connection>
+      <database_tablename>customer</database_tablename>
+      <keyprefix>calcustomers</keyprefix>
+      <sql>SELECT * FROM customer WHERE region_state='CA';</sql>
+    </query>
+    <query>
+      <db_connection>SQLServer|Data Source=192.168.1.49,1433;Initial Catalog=Northwind;User ID=jjatem;Password=Redis23277</db_connection>
       <database_tablename>customer</database_tablename>
       <keyprefix>calcustomers</keyprefix>
       <sql>SELECT * FROM customer WHERE region_state='CA';</sql>
