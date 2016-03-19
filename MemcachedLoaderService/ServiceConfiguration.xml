@@ -30,7 +30,7 @@
       <sql>select * from customer;</sql>
     </query>
     <query>
-      <db_connection>MySQL|Server=192.168.1.48;Port=1234;Database=development;Uid=jjatem;Pwd=gk223277;</db_connection>
+      <db_connection>MySQL|Server=192.168.1.48;Port=3306;Database=development;Uid=jjatem;Pwd=gk223277;</db_connection>
       <database_tablename>customer</database_tablename>
       <keyprefix>calcustomers</keyprefix>
       <sql>SELECT * FROM customer WHERE region_state='CA';</sql>

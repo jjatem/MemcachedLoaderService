@@ -21,7 +21,7 @@ namespace MemcachedLoaderService
 
                     foreach(string ColumnName in PKColumnsList)
                     {
-                        FormattedKey += myRow[ColumnName].ToString().Trim().Replace(" ", string.Empty) + "+";
+                        FormattedKey += myRow[ColumnName].ToString().ToUpper().Trim().Replace(" ", string.Empty) + "+";
                     }
 
                     int LastSeparatorPos = FormattedKey.LastIndexOf("+");

@@ -461,7 +461,7 @@ namespace MemcachedLoaderService
             try
             {
                 using (MySqlConn = new MySqlConnection(ConnString))
-                {
+                {                    
                     MySqlCommand MySqlCmd = new MySqlCommand(TableName, MySqlConn);
                     MySqlCmd.CommandType = CommandType.TableDirect;
 
