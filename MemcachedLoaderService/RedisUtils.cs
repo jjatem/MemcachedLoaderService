@@ -64,7 +64,7 @@ namespace MemcachedLoaderService
                     /*
                      * Retrieve Query Data from MySql
                      */
-                    DataTable QueryDataTable = Utils.GetMySQLTable(Config.DBConnectionSettings, QueryToLoad);
+                    DataTable QueryDataTable = Utils.GetDataTable(Config.DBConnectionSettings, QueryToLoad);
 
                     /*
                      * Determine whether to permanently persist kvp cached object in Redis
