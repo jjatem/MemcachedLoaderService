@@ -8,8 +8,9 @@ namespace MemcachedLoaderService
 {
     public class CachedQuery
     {
+        public string DBConnString { get; set; }
         public string KeyPrefix { get; set; }
         public string Sql { get; set; }
-        public string MySqlTableName { get; set; }
+        public string DatabaseTableName { get; set; }
     }
 }

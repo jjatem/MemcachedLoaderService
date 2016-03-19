@@ -59,7 +59,7 @@ namespace MemcachedLoaderService
         /// <param name="DictionaryToCache"></param>
         /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public static bool GetQueryCacheDictionaryFromDataTable(MySQLSettings MySQLConfig, CachedQuery QuerySpecs, DataTable MySQLTableRowsToCache, out Dictionary<string,Dictionary<string, string>> DictionaryToCache, out string ErrorMessage)
+        public static bool GetQueryCacheDictionaryFromDataTable(DatabaseSettings DBConfig, CachedQuery QuerySpecs, DataTable DataTableRowsToCache, out Dictionary<string,Dictionary<string, string>> DictionaryToCache, out string ErrorMessage)
         {
             bool CreatedDictionary = false;
             ErrorMessage = string.Empty;
@@ -70,7 +70,7 @@ namespace MemcachedLoaderService
             /*
              * First Get Database Table Schema for the table to cache
              */
-            DataTable TableSchemaDefinition = Utils.GetSchemaTypeMySQLTable(MySQLConfig, QuerySpecs.MySqlTableName);
+            DataTable TableSchemaDefinition = Utils.GetSchemaTypeMySQLTable(DBConfig, QuerySpecs.DatabaseTableName);
 
             /*
              * Get Primary Key ColumnNames
@@ -83,9 +83,9 @@ namespace MemcachedLoaderService
             /*
              * Build in Memory Dictionary to Load in Memcached service
              */
-            if (MySQLTableRowsToCache != null && MySQLTableRowsToCache.Rows.Count > 0)
+            if (DataTableRowsToCache != null && DataTableRowsToCache.Rows.Count > 0)
             {
-                foreach (DataRow dr in MySQLTableRowsToCache.Rows)
+                foreach (DataRow dr in DataTableRowsToCache.Rows)
                 {
                     string MainDictKey = dr.GetFormatedMemCachedKey(PKColumnNames, QuerySpecs);
                     Dictionary<string, string> NestedDictValue = dr.Table.Columns
@@ -134,7 +134,7 @@ namespace MemcachedLoaderService
                 /*
                  * Retrieve Query Data from MySql
                  */
-                DataTable QueryDataTable = GetMySQLTable(Config.MySQLConnectionSettings, QueryToLoad);
+                DataTable QueryDataTable = GetMySQLTable(Config.DBConnectionSettings, QueryToLoad);
 
                 /*
                  * Determine whether to permanently persist kvp cached object in Redis
@@ -153,7 +153,7 @@ namespace MemcachedLoaderService
                     /*
                      * Convert DataTable / MySQL Query ResultSet in Dictionary<string,Dictionary<string,string>> object
                      */
-                    bool Success = Utils.GetQueryCacheDictionaryFromDataTable(Config.MySQLConnectionSettings, QueryToLoad, QueryDataTable, out MemoryDict, out ErrMsg);
+                    bool Success = Utils.GetQueryCacheDictionaryFromDataTable(Config.DBConnectionSettings, QueryToLoad, QueryDataTable, out MemoryDict, out ErrMsg);
 
                     /*
                      * Table Data Dictionary was successfully created - Cached each row in Memcached as a JSON dictionary
@@ -212,7 +212,7 @@ namespace MemcachedLoaderService
         /// </summary>
         /// <param name="MySQLConfig"></param>
         /// <returns></returns>
-        public static string GetMySQLConnectionString(MySQLSettings MySQLConfig)
+        public static string GetMySQLConnectionString(DatabaseSettings MySQLConfig)
         {
             if (MySQLConfig == null)
                 throw new ApplicationException("Invalid MySQL Configuration Settings Object Instance. Cannot build a connection string.");
@@ -226,7 +226,7 @@ namespace MemcachedLoaderService
         /// <param name="MySQLConfig"></param>
         /// <param name="MemCQuery"></param>
         /// <returns></returns>
-        public static DataTable GetMySQLTable(MySQLSettings MySQLConfig, CachedQuery MemCQuery)
+        public static DataTable GetMySQLTable(DatabaseSettings MySQLConfig, CachedQuery MemCQuery)
         {
             DataTable MyQueryTable = new DataTable();
 
@@ -273,7 +273,7 @@ namespace MemcachedLoaderService
         /// <param name="MySQLConfig"></param>
         /// <param name="TableName"></param>
         /// <returns></returns>
-        private static DataTable GetSchemaTypeMySQLTable(MySQLSettings MySQLConfig, string TableName)
+        private static DataTable GetSchemaTypeMySQLTable(DatabaseSettings MySQLConfig, string TableName)
         {
             DataTable ReturnTable = null;
             MySqlConnection MySqlConn = null;

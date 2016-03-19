@@ -73,7 +73,7 @@
     <Compile Include="ConfigurationObjects\CachedQuery.cs" />
     <Compile Include="ConfigurationObjects\MemcachedLoaderConfig.cs" />
     <Compile Include="ConfigurationObjects\MemcachedSettings.cs" />
-    <Compile Include="ConfigurationObjects\MySQLSettings.cs" />
+    <Compile Include="ConfigurationObjects\DatabaseSettings.cs" />
     <Compile Include="ConfigurationObjects\RedisSettings.cs" />
     <Compile Include="DataRowCustomExtensions.cs" />
     <Compile Include="MemcachedLoaderService.cs">
@@ -82,6 +82,7 @@
     <Compile Include="MemcachedLoaderService.Designer.cs">
       <DependentUpon>MemcachedLoaderService.cs</DependentUpon>
     </Compile>
+    <Compile Include="MemcacheLoaderConstants.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

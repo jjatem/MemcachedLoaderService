@@ -17,7 +17,7 @@ namespace MemcachedLoaderService
         public int ReloadEntireCacheSeconds { get; set; }
         public MemcachedSettings MemcachedConnectionSettings { get; set; }
         public RedisSettings RedisConnectionSettings { get; set; }
-        public MySQLSettings MySQLConnectionSettings { get; set; }
+        public DatabaseSettings DBConnectionSettings { get; set; }
         public List<CachedQuery> CachedQueriesCollection { get; set; }
 
 
@@ -93,26 +93,26 @@ namespace MemcachedLoaderService
                 /*
                  * Load MySQL database connection settings - for now a single server support
                  */
-                MySQLSettings MySqlConfig = new MySQLSettings();
+                DatabaseSettings MySqlConfig = new DatabaseSettings();
 
                 //server
-                string dbServer = XmlDoc.SelectSingleNode("/configuration/mysql/server").InnerText;
+                string dbServer = XmlDoc.SelectSingleNode("/configuration/database_settings/server").InnerText;
                 MySqlConfig.Server = dbServer;
 
                 //port
-                string dbPort = XmlDoc.SelectSingleNode("/configuration/mysql/port").InnerText;
+                string dbPort = XmlDoc.SelectSingleNode("/configuration/database_settings/port").InnerText;
                 MySqlConfig.Port = dbPort;
 
                 //username
-                string dbUsername = XmlDoc.SelectSingleNode("/configuration/mysql/username").InnerText;
+                string dbUsername = XmlDoc.SelectSingleNode("/configuration/database_settings/username").InnerText;
                 MySqlConfig.Username = dbUsername;
 
                 //password
-                string dbPassword = XmlDoc.SelectSingleNode("/configuration/mysql/password").InnerText;
+                string dbPassword = XmlDoc.SelectSingleNode("/configuration/database_settings/password").InnerText;
                 MySqlConfig.Password = dbPassword;
 
                 //password
-                string dbName = XmlDoc.SelectSingleNode("/configuration/mysql/database").InnerText;
+                string dbName = XmlDoc.SelectSingleNode("/configuration/database_settings/database").InnerText;
                 MySqlConfig.Database = dbName;
 
                 /*
@@ -120,7 +120,7 @@ namespace MemcachedLoaderService
                  */
                 config.MemcachedConnectionSettings = MemcachedServerSettings;
                 config.RedisConnectionSettings = RedisServerSettings;
-                config.MySQLConnectionSettings = MySqlConfig;
+                config.DBConnectionSettings = MySqlConfig;
                 config.CachedQueriesCollection = LoadQueriesSettings(XmlDoc.SelectNodes("/configuration/cache_queries/query"));
             }
             catch (Exception ex)
@@ -163,9 +163,14 @@ namespace MemcachedLoaderService
                                 cachedQuery.Sql = XmlItem.InnerText;
                                 continue;
                             }
-                            if (XmlItem.Name.Equals("mysql_tablename"))
+                            if (XmlItem.Name.Equals("database_tablename"))
                             {
-                                cachedQuery.MySqlTableName = XmlItem.InnerText;
+                                cachedQuery.DatabaseTableName = XmlItem.InnerText;
+                                continue;
+                            }
+                            if (XmlItem.Name.Equals("db_connection"))
+                            {
+                                cachedQuery.DBConnString = XmlItem.InnerText;
                                 continue;
                             }
                         }

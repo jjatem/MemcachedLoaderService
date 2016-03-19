@@ -64,7 +64,7 @@ namespace MemcachedLoaderService
                     /*
                      * Retrieve Query Data from MySql
                      */
-                    DataTable QueryDataTable = Utils.GetMySQLTable(Config.MySQLConnectionSettings, QueryToLoad);
+                    DataTable QueryDataTable = Utils.GetMySQLTable(Config.DBConnectionSettings, QueryToLoad);
 
                     /*
                      * Determine whether to permanently persist kvp cached object in Redis
@@ -83,7 +83,7 @@ namespace MemcachedLoaderService
                         /*
                          * Convert DataTable / MySQL Query ResultSet in Dictionary<string,Dictionary<string,string>> object
                          */
-                        bool Success = Utils.GetQueryCacheDictionaryFromDataTable(Config.MySQLConnectionSettings, QueryToLoad, QueryDataTable, out MemoryDict, out ErrMsg);
+                        bool Success = Utils.GetQueryCacheDictionaryFromDataTable(Config.DBConnectionSettings, QueryToLoad, QueryDataTable, out MemoryDict, out ErrMsg);
 
                         /*
                          * Table Data Dictionary was successfully created - Cached each row in Memcached as a JSON dictionary

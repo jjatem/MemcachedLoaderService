@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MemcachedLoaderService
 {
-    public class MySQLSettings
+    public class DatabaseSettings
     {
+        public string DBType { get; set; }
         public string Server { get; set; }
         public string Port { get; set; }
         public string Username { get; set; }
