@@ -19,7 +19,7 @@
     <server>192.168.1.48</server>
     <port>3306</port>
     <username>jjatem</username>
-    <password></password>
+    <password>gk223277</password>
     <database>development</database>
   </database_settings>
   <cache_queries>
@@ -30,13 +30,13 @@
       <sql>select * from customer;</sql>
     </query>
     <query>
-      <db_connection>MySQL|Server=192.168.1.48;Port=3306;Database=development;Uid=jjatem;Pwd=;</db_connection>
+      <db_connection>MySQL|Server=192.168.1.48;Port=3306;Database=development;Uid=jjatem;Pwd=gk223277;</db_connection>
       <database_tablename>customer</database_tablename>
       <keyprefix>calcustomers</keyprefix>
       <sql>SELECT * FROM customer WHERE region_state='CA';</sql>
     </query>
     <query>
-      <db_connection>SQLServer|Data Source=192.168.1.49,1433;Initial Catalog=Northwind;User ID=jjatem;Password=</db_connection>
+      <db_connection>SQLServer|Data Source=192.168.1.49,1433;Initial Catalog=Northwind;User ID=jjatem;Password=Redis23277</db_connection>
       <database_tablename>Developer</database_tablename>
       <keyprefix>mbsdeveloper</keyprefix>
       <sql>SELECT * FROM Developer;</sql>
