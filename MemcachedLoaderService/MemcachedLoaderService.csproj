@@ -82,7 +82,7 @@
     <Compile Include="MemcachedLoaderService.Designer.cs">
       <DependentUpon>MemcachedLoaderService.cs</DependentUpon>
     </Compile>
-    <Compile Include="MemcacheLoaderConstants.cs" />
+    <Compile Include="MemcacheLoaderDBTypeUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

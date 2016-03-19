@@ -9,6 +9,7 @@ using System.Diagnostics;
 using NMemcached;
 using NMemcached.Client;
 using MySql.Data.MySqlClient;
+using System.Data.SqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -221,12 +222,82 @@ namespace MemcachedLoaderService
         }
 
         /// <summary>
+        /// Formats a SQL Server Connection String
+        /// </summary>
+        /// <param name="SqlServerConfig"></param>
+        /// <returns></returns>
+        public static string GetMSSQLServerConnectionString(DatabaseSettings SqlServerConfig)
+        {
+            if (SqlServerConfig == null)
+                throw new ApplicationException("Invalid Microsoft Sql Server Configuration Settings Object Instance. Cannot build a connection string.");
+
+            string FormattedPort = (!string.IsNullOrWhiteSpace(SqlServerConfig.Port)) ? ("," + SqlServerConfig.Port) : string.Empty;
+
+            return string.Format("Address={0}{1};Database={2};User ID={3};Pwd={4};", SqlServerConfig.Server, FormattedPort, SqlServerConfig.Database, SqlServerConfig.Username, SqlServerConfig.Password);
+        }
+
+
+        /// <summary>
+        /// Generic Get ADO.NET DataTable method
+        /// </summary>
+        /// <param name="DatabaseConfig"></param>
+        /// <param name="MemCQuery"></param>
+        /// <returns></returns>
+        public static DataTable GetDataTable(DatabaseSettings DatabaseConfig, CachedQuery MemCQuery)
+        {
+            DataTable MyQueryTable = null;
+            DBType DatabaseType;
+
+            /*
+             * First Determine whether to use the Main Database Connection Settings or use the Override Connection string of the Query. Override takes precedence over main
+             */
+            bool UseQueryDBConnectionString = (!string.IsNullOrWhiteSpace(MemCQuery.DBConnString) && MemCQuery.DBConnString.Contains("|"));
+
+            /*
+             * Determine Database Type
+             */
+            if (UseQueryDBConnectionString)
+            {
+                string[] DBConnArray = MemCQuery.DBConnString.Split('|');
+                DatabaseType = DBTypesUtils.GetDBType(DBConnArray[0]);
+            }
+            else
+            {
+                DatabaseType = DBTypesUtils.GetDBType(DatabaseConfig.DBType);
+            }
+
+            /*
+             * Use appropriate database retrieval logic based on DBType
+             */
+            switch (DatabaseType)
+            {
+                case DBType.MYSQL:
+                    MyQueryTable = GetMySQLTable(DatabaseConfig, MemCQuery, UseQueryDBConnectionString);
+                    break;
+                case DBType.ORACLE:
+                    MyQueryTable = GetMSSQLServerTable(DatabaseConfig, MemCQuery, UseQueryDBConnectionString);
+                    break;
+                case DBType.POSTGRESQL:
+                    break;
+                case DBType.SQLSERVER:
+                    break;
+                case DBType.UNSUPPORTED:
+                    break;
+                default:
+                    break;
+            }
+
+            return MyQueryTable;
+        }
+
+
+        /// <summary>
         /// Retrieves a query from MySQL
         /// </summary>
         /// <param name="MySQLConfig"></param>
         /// <param name="MemCQuery"></param>
         /// <returns></returns>
-        public static DataTable GetMySQLTable(DatabaseSettings MySQLConfig, CachedQuery MemCQuery)
+        public static DataTable GetMySQLTable(DatabaseSettings MySQLConfig, CachedQuery MemCQuery, bool UseQueryDBOverride = false)
         {
             DataTable MyQueryTable = new DataTable();
 
@@ -234,6 +305,14 @@ namespace MemcachedLoaderService
             {
                 string ConnString = Utils.GetMySQLConnectionString(MySQLConfig);
 
+                /*
+                 * Use overriden query connection string if query specs has one
+                 */
+                if (UseQueryDBOverride) { ConnString = DBTypesUtils.GetDBTypeInfo(MemCQuery.DBConnString).ConnectionString; }
+
+                /*
+                 * Get Data Table logic using MySQL ADO.NET provider
+                 */
                 using (MySqlConnection dbConn = new MySqlConnection(ConnString))
                 {
                     dbConn.Open();
@@ -257,6 +336,61 @@ namespace MemcachedLoaderService
             catch (Exception ex)
             {
                 string ErrorMessage = string.Format("MemcachedLoaderService. Error Retrieving data from MySQL. Select Query is [{0}]. Error Message is [{1}].", MemCQuery.Sql, ex.Message);
+                Utils.GetEventLog().WriteEntry(ErrorMessage);
+            }
+
+            /*
+             * Return database table
+             */
+            return MyQueryTable;
+        }
+
+        /// <summary>
+        /// Retrieves a query from a Microsoft SQL Server
+        /// </summary>
+        /// <param name="SqlServerConfig"></param>
+        /// <param name="MemCQuery"></param>
+        /// <param name="UseQueryDBOverride"></param>
+        /// <returns></returns>
+        public static DataTable GetMSSQLServerTable(DatabaseSettings SqlServerConfig, CachedQuery MemCQuery, bool UseQueryDBOverride = false)
+        {
+            DataTable MyQueryTable = new DataTable();
+
+            try
+            {
+                string ConnString = Utils.GetMSSQLServerConnectionString(SqlServerConfig);
+
+                /*
+                 * Use overriden query connection string if query specs has one
+                 */
+                if (UseQueryDBOverride) { ConnString = DBTypesUtils.GetDBTypeInfo(MemCQuery.DBConnString).ConnectionString; }
+
+                /*
+                 * Get Data Table logic using MySQL ADO.NET provider
+                 */
+                using (SqlConnection dbConn = new SqlConnection(ConnString))
+                {
+                    dbConn.Open();
+
+                    SqlCommand MySqlServerCmd = new SqlCommand(MemCQuery.Sql, dbConn);
+                    MySqlServerCmd.CommandType = CommandType.Text;
+                    MySqlServerCmd.CommandTimeout = int.MaxValue;
+
+                    SqlDataAdapter SqlServerAdapter = new SqlDataAdapter(MySqlServerCmd);
+                    DataSet MyCachedQueryDataSet = new DataSet();
+                    SqlServerAdapter.Fill(MyCachedQueryDataSet);
+
+                    if (MyCachedQueryDataSet != null && MyCachedQueryDataSet.Tables != null && MyCachedQueryDataSet.Tables.Count > 0)
+                    {
+                        MyQueryTable = MyCachedQueryDataSet.Tables[0];
+                    }
+
+                    dbConn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = string.Format("MemcachedLoaderService. Error Retrieving data from Microsoft Sql Server. Select Query is [{0}]. Error Message is [{1}].", MemCQuery.Sql, ex.Message);
                 Utils.GetEventLog().WriteEntry(ErrorMessage);
             }
 
