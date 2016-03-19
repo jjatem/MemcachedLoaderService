@@ -274,12 +274,12 @@ namespace MemcachedLoaderService
                 case DBType.MYSQL:
                     MyQueryTable = GetMySQLTable(DatabaseConfig, MemCQuery, UseQueryDBConnectionString);
                     break;
-                case DBType.ORACLE:
-                    MyQueryTable = GetMSSQLServerTable(DatabaseConfig, MemCQuery, UseQueryDBConnectionString);
+                case DBType.ORACLE:                    
                     break;
                 case DBType.POSTGRESQL:
                     break;
                 case DBType.SQLSERVER:
+                    MyQueryTable = GetMSSQLServerTable(DatabaseConfig, MemCQuery, UseQueryDBConnectionString);
                     break;
                 case DBType.UNSUPPORTED:
                     break;
