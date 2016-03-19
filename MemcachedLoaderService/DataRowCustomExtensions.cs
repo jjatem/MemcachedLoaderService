@@ -17,7 +17,20 @@ namespace MemcachedLoaderService
             {
                 if (PKColumnsList != null && PKColumnsList.Count > 1)
                 {
-                    FormattedKey = string.Format("{0}.key={1}", QuerySpecs.KeyPrefix, PKColumnsList.Aggregate((bulk, obj) => bulk + myRow[obj].ToString() + "+"));
+                    FormattedKey = string.Format("{0}.key=", QuerySpecs.KeyPrefix);
+
+                    foreach(string ColumnName in PKColumnsList)
+                    {
+                        FormattedKey += myRow[ColumnName].ToString().Trim().Replace(" ", string.Empty) + "+";
+                    }
+
+                    int LastSeparatorPos = FormattedKey.LastIndexOf("+");
+                    if (LastSeparatorPos > 0)
+                    {
+                        FormattedKey = FormattedKey.Remove(LastSeparatorPos);
+                    }
+                            
+
                 }
                 else if (PKColumnsList != null && PKColumnsList.Count == 1)
                 {

@@ -506,7 +506,8 @@ namespace MemcachedLoaderService
             {
                 using (SqlConn = new SqlConnection(ConnString))
                 {
-                    SqlCommand SqlCmd = new SqlCommand(TableName, SqlConn);
+                    string SelectSql = string.Format("SELECT * FROM {0}", TableName);
+                    SqlCommand SqlCmd = new SqlCommand(SelectSql, SqlConn);
                     SqlCmd.CommandType = CommandType.Text;
 
                     SqlDataAdapter SqlDataAdapt = new SqlDataAdapter(SqlCmd);
