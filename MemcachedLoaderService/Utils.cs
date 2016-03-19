@@ -71,7 +71,7 @@ namespace MemcachedLoaderService
             /*
              * First Get Database Table Schema for the table to cache
              */
-            DataTable TableSchemaDefinition = Utils.GetSchemaTypeMySQLTable(DBConfig, QuerySpecs.DatabaseTableName);
+            DataTable TableSchemaDefinition = Utils.GetSchemaTypeDatabaseSQLTable(DBConfig, QuerySpecs.DatabaseTableName, QuerySpecs.DBConnString);
 
             /*
              * Get Primary Key ColumnNames
@@ -135,7 +135,7 @@ namespace MemcachedLoaderService
                 /*
                  * Retrieve Query Data from MySql
                  */
-                DataTable QueryDataTable = GetMySQLTable(Config.DBConnectionSettings, QueryToLoad);
+                DataTable QueryDataTable = GetDataTable(Config.DBConnectionSettings, QueryToLoad);
 
                 /*
                  * Determine whether to permanently persist kvp cached object in Redis
@@ -404,15 +404,59 @@ namespace MemcachedLoaderService
         /// <summary>
         /// Get Table Schema. Needed to build PK simple or compounded key values
         /// </summary>
-        /// <param name="MySQLConfig"></param>
+        /// <param name="DatabaseConfig"></param>
         /// <param name="TableName"></param>
         /// <returns></returns>
-        private static DataTable GetSchemaTypeMySQLTable(DatabaseSettings MySQLConfig, string TableName)
+        private static DataTable GetSchemaTypeDatabaseSQLTable(DatabaseSettings DatabaseConfig, string TableName, string OverrideDBConnectionStr = "")
+        {
+            DataTable ReturnTable = null;
+            DBType DatabaseType;
+
+            string ConnString = Utils.GetMySQLConnectionString(DatabaseConfig);
+            bool UseOverrideDBConnection = (!string.IsNullOrWhiteSpace(OverrideDBConnectionStr) && OverrideDBConnectionStr.Contains('|'));
+
+            if (UseOverrideDBConnection)
+            {
+                DatabaseType = DBTypesUtils.GetDBTypeInfo(OverrideDBConnectionStr).DatabaseType;
+                ConnString = DBTypesUtils.GetDBTypeInfo(OverrideDBConnectionStr).ConnectionString;
+            }
+            else
+            {
+                DatabaseType = DBTypesUtils.GetDBType(DatabaseConfig.DBType);
+            }
+            
+            switch (DatabaseType)
+            {
+                case DBType.MYSQL:
+                    ReturnTable = GetMySQLSchemaTypeTable(ConnString, TableName);
+                    break;
+                case DBType.ORACLE:
+                    break;
+                case DBType.POSTGRESQL:
+                    break;
+                case DBType.SQLSERVER:
+                    ReturnTable = GetMSSQLServerSchemaTypeTable(ConnString, TableName);
+                    break;
+                case DBType.UNSUPPORTED:
+                    break;
+                default:
+                    break;
+            }
+
+            return ReturnTable;
+        }
+
+
+        /// <summary>
+        /// Get Table Schema Definition from MySQL
+        /// </summary>
+        /// <param name="ConnString"></param>
+        /// <param name="TableName"></param>
+        /// <returns></returns>
+        private static DataTable GetMySQLSchemaTypeTable(string ConnString, string TableName)
         {
             DataTable ReturnTable = null;
             MySqlConnection MySqlConn = null;
-
-            string ConnString = Utils.GetMySQLConnectionString(MySQLConfig);
 
             try
             {
@@ -446,6 +490,49 @@ namespace MemcachedLoaderService
             return ReturnTable;
         }
 
+
+        /// <summary>
+        /// Get Table Schema definition from SQL Server
+        /// </summary>
+        /// <param name="ConnString"></param>
+        /// <param name="TableName"></param>
+        /// <returns></returns>
+        private static DataTable GetMSSQLServerSchemaTypeTable(string ConnString, string TableName)
+        {
+            DataTable ReturnTable = null;
+            SqlConnection SqlConn = null;
+
+            try
+            {
+                using (SqlConn = new SqlConnection(ConnString))
+                {
+                    SqlCommand SqlCmd = new SqlCommand(TableName, SqlConn);
+                    SqlCmd.CommandType = CommandType.TableDirect;
+
+                    SqlDataAdapter SqlDataAdapt = new SqlDataAdapter(SqlCmd);
+
+                    DataSet MyDataSet = new DataSet();
+                    SqlDataAdapt.FillSchema(MyDataSet, SchemaType.Source, TableName);
+
+                    if (MyDataSet.Tables != null && MyDataSet.Tables.Count > 0)
+                    {
+                        ReturnTable = MyDataSet.Tables[0];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = string.Format("MemcachedLoaderService. Error Retrieving Table Specs from Microsoft SQL Server Connection. TableName is [{0}]. Error Message is [{1}].", TableName, ex.Message);
+                Utils.GetEventLog().WriteEntry(ErrorMessage);
+            }
+            finally
+            {
+                if (SqlConn != null)
+                    SqlConn.Close();
+            }
+
+            return ReturnTable;
+        }
 
         /// <summary>
         /// Gets the primary key columns for a given table schema
