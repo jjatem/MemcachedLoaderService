@@ -121,6 +121,44 @@ namespace MemcachedLoaderServiceClient
             return retval;
         }
 
+        public List<T> GetCachedModelsCollectionForKeyPrefix<T>(string key_prefix)
+        {
+            List<T> collection = new List<T>();
+
+            if (this.GetRedisClient != null)
+            {
+                List<string> AllStoredKeys = this.GetRedisClient.GetAllKeys();
+
+                if (AllStoredKeys != null && AllStoredKeys.Count > 0)
+                {
+                    foreach (string StoredKey in AllStoredKeys)
+                    {
+                        if (StoredKey.Trim().ToUpper().StartsWith(key_prefix.Trim().ToUpper()))
+                        {
+                            T obj = GetCachedModelObjectForKey<T>(StoredKey);
+                            collection.Add(obj);
+                        }
+                    }
+                }
+            }
+
+            return collection;
+        }
+
+        public T GetCachedModelObjectForKey<T>(string key)
+        {
+            T obj = default(T);
+
+            if (this.GetRedisClient != null)
+            {
+                string JSONObject = this.GetRedisClient.Get<string>(key);
+
+                obj = JsonConvert.DeserializeObject<T>(JSONObject);
+            }
+
+            return obj;
+        }
+
         public Dictionary<string, string> GetStoredRowDictionaryForKey(string key)
         {
             Dictionary<string, string> retval = null;

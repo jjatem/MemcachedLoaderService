@@ -15,7 +15,7 @@ namespace MemCachedTestClient
         static void Main(string[] args)
         {
             //TestNMemcachedClient();
-            //TestMemcachedClientLogic();
+            TestMemcachedClientLogic();
 
             TestRedisClient();
            
@@ -60,6 +60,13 @@ namespace MemCachedTestClient
             System.Console.WriteLine();
             System.Console.WriteLine();
 
+
+            Developer model = RedisCacheServer.GetCachedModelObjectForKey<Developer>("mbsdeveloper.key=ARCHITECT+JEFFREYLANGLEY");
+            List<Developer> myList = RedisCacheServer.GetCachedModelsCollectionForKeyPrefix<Developer>("mbsdeveloper");
+
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
         }
 
         public static void TestMemcachedClientLogic()
@@ -93,6 +100,8 @@ namespace MemCachedTestClient
 
             System.Console.WriteLine("Obtaining City Name for Customer with Id 3");
             System.Console.WriteLine("City Name is: {0}", MemcachedServer.GetColumnValueForRowKeyandColumnName("customer.key=3", "city"));
+
+            Developer model = MemcachedServer.GetCachedModelObjectForKey<Developer>("mbsdeveloper.key=ARCHITECT+JEFFREYLANGLEY");
 
             System.Console.WriteLine();
             System.Console.WriteLine();

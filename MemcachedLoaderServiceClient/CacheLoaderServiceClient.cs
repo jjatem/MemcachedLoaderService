@@ -77,6 +77,20 @@ namespace MemcachedLoaderServiceClient
             return retval;
         }
 
+        public T GetCachedModelObjectForKey<T>(string key)
+        {
+            T obj = default(T);
+
+            if (this.IsServerConnectionOpen())
+            {
+                string JSONObject = this.Client.Get(key).ToString();
+
+                obj = JsonConvert.DeserializeObject<T>(JSONObject);
+            }
+
+            return obj;
+        }
+
         public string GetColumnValueForRowKeyandColumnName(string key, string column_name)
         {
             string retval = string.Empty;
