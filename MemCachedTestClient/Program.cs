@@ -60,9 +60,14 @@ namespace MemCachedTestClient
             System.Console.WriteLine();
             System.Console.WriteLine();
 
-
+            /*
+             * Client example using model objects
+             */
             Developer model = RedisCacheServer.GetCachedModelObjectForKey<Developer>("mbsdeveloper.key=ARCHITECT+JEFFREYLANGLEY");
+
             List<Developer> myList = RedisCacheServer.GetCachedModelsCollectionForKeyPrefix<Developer>("mbsdeveloper");
+
+            List<Film> myMovieList = RedisCacheServer.GetCachedModelsCollectionForKeyPrefix<Film>("film");
 
             System.Console.WriteLine();
             System.Console.WriteLine();
