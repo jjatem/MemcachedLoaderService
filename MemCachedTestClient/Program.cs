@@ -15,13 +15,24 @@ namespace MemCachedTestClient
         static void Main(string[] args)
         {
             //TestNMemcachedClient();
-            TestMemcachedClientLogic();
+            //TestMemcachedClientLogic();
 
             TestRedisClient();
+
+            //RetrieveCustomerObjects();
            
 
             System.Console.WriteLine("Press Any Key to Exit...");
             System.Console.ReadKey();
+
+        }
+
+        public static void RetrieveCustomerObjects()
+        {
+            CacheLoaderRedisClient RedisCacheServer = new CacheLoaderRedisClient("192.168.1.48", 6379);
+
+
+            List<Customer> MyCustomers = RedisCacheServer.GetCachedModelsCollectionForKeyPrefix<Customer>("customer");
 
         }
 
