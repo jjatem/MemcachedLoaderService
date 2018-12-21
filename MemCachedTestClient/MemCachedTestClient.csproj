@@ -40,8 +40,9 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NMemcached.Client">
-      <HintPath>..\nmemcached\releases\0\NMemcached.Client_1.2\NMemcached.Client.dll</HintPath>
+    <Reference Include="NMemcached.Client, Version=1.2.0.0, Culture=neutral, PublicKeyToken=d9f51e17d91c891a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\NMemcached.Client_1.2\NMemcached.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
